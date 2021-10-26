@@ -1,4 +1,4 @@
-module github.com/masterjk/multicast-sender
+module github.com/masterjk/multicast-tools
 
 go 1.17
 
