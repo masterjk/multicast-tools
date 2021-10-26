@@ -1,0 +1,15 @@
+FROM golang:1.17.2 as builder
+WORKDIR /go/src/github.com/masterjk/multicast-tools
+COPY . $WORKDIR
+RUN GOOS=linux CGO_ENABLED=0 GO111MODULE=on go build -ldflags="-s -w" -v -o sender ./cmd/sender/
+
+
+FROM hairyhenderson/upx:3.96 as upx
+COPY --from=builder /go/src/github.com/masterjk/multicast-tools/sender /orig/
+RUN mkdir /upx/
+RUN upx --best --lzma -o /upx/sender /orig/sender
+
+
+FROM scratch
+COPY --from=upx /upx/sender /
+CMD ["/sender"]
